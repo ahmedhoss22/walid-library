@@ -1,0 +1,410 @@
+{
+	"info": {
+		"_postman_id": "e43ab44e-aea9-4a3e-8cf8-4df35bba5451",
+		"name": "mobile-store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30163280",
+		"_collection_link": "https://warped-meteor-430620.postman.co/workspace/xo-game-Workspace~1230cbb0-1efe-4893-9aec-eef753a9d847/collection/30163280-e43ab44e-aea9-4a3e-8cf8-4df35bba5451?action=share&source=collection_link&creator=30163280"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"ahmed\",\r\n    \"username\":\"ahmedd@gmail.com\",\r\n    \"password\":\"Hoss@12345\",\r\n    \"brnach\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/api/auth/register",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"ahmedd@gmail.com\",\r\n    \"password\":\"Hoss@12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/api/auth/login",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZGNhZjQ0YmE1OWQ1OTU0Mjc0MTQ3YiIsImlhdCI6MTcwODk2MTc2NCwiZXhwIjoxNzA5NTY2NTY0fQ.CDL5o0qwJcISMxGeDUk413utsIa_dFO2cnz2gEljjII",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"ahmed\",\r\n    \"username\":\"ahmedd@gmail.com\",\r\n    \"password\":\"Hoss@12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/api/auth/register-admin",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register-admin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "get user data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/api/user/data",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"data"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/api/user/data/all",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"data",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/api/user/659add7553e1aa280dfadb57",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"659add7553e1aa280dfadb57"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "branch",
+			"item": [
+				{
+					"name": "addBranch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZGNhZjQ0YmE1OWQ1OTU0Mjc0MTQ3YiIsImlhdCI6MTcwODk2MTc2NCwiZXhwIjoxNzA5NTY2NTY0fQ.CDL5o0qwJcISMxGeDUk413utsIa_dFO2cnz2gEljjII",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"المنتزة\",\r\n    \"balance\":10000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/api/branch",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"branch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all branches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/api/branch",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"branch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update branch",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZGNhZjQ0YmE1OWQ1OTU0Mjc0MTQ3YiIsImlhdCI6MTcwODk2MTc2NCwiZXhwIjoxNzA5NTY2NTY0fQ.CDL5o0qwJcISMxGeDUk413utsIa_dFO2cnz2gEljjII",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"balance\":5000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/api/branch/65dcb081c50161192a074784",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"branch",
+								"65dcb081c50161192a074784"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete branch",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZGNhZjQ0YmE1OWQ1OTU0Mjc0MTQ3YiIsImlhdCI6MTcwODk2MTc2NCwiZXhwIjoxNzA5NTY2NTY0fQ.CDL5o0qwJcISMxGeDUk413utsIa_dFO2cnz2gEljjII",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api}}/api/branch/65dcb095c50161192a074788",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"branch",
+								"65dcb095c50161192a074788"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "equipment",
+			"item": [
+				{
+					"name": "add equipment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZGNhZjQ0YmE1OWQ1OTU0Mjc0MTQ3YiIsImlhdCI6MTcwODk2MTc2NCwiZXhwIjoxNzA5NTY2NTY0fQ.CDL5o0qwJcISMxGeDUk413utsIa_dFO2cnz2gEljjII",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"خط 2\",\r\n    \"branch\":\"65dcb081c50161192a074784\",\r\n    \"type\":\"phone\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/api/equipment",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"equipment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update equipment",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"phone 2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/api/equipment/65dcd340e081103b498d851a",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"equipment",
+								"65dcd340e081103b498d851a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get branch equipment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/api/equipment/65dcb081c50161192a074784",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"equipment",
+								"65dcb081c50161192a074784"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Equipment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api}}/api/equipment/65dcd340e081103b498d851a",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"api",
+								"equipment",
+								"65dcd340e081103b498d851a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "api",
+			"value": "http://localhost:5000"
+		},
+		{
+			"key": "token",
+			"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZGNhZjQ0YmE1OWQ1OTU0Mjc0MTQ3YiIsImlhdCI6MTcwODk2MTc2NCwiZXhwIjoxNzA5NTY2NTY0fQ.CDL5o0qwJcISMxGeDUk413utsIa_dFO2cnz2gEljjII"
+		}
+	]
+}
