@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import { store } from '../redux/store';
 import TeacherContent from '../Pages/TeacherContent';
 import Pdfs from '../Pages/Pdfs';
+import Year from '../Pages/Year';
 
 export default function App() {
   return (
@@ -36,7 +37,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/teacher-content/:id" element={<TeacherContent/>} />
-            <Route path="/pdfs/:id" element={<Pdfs/>} />
+            <Route path="/pdfs/:id" element={<Year/>} />
+            <Route path="/pdfs/:id/:year" element={<Pdfs/>} />
           </Routes>
         </Router>
       </ThemeProvider>

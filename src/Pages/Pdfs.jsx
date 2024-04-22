@@ -11,21 +11,44 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import book from "../images/book.png"
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import AddPdf from '../components/AddPdf';
+import { getTeacherPdf } from '../redux/slices/pdf.slice';
+import ConfirmationDialoge from '../components/ConfirmationDialoge';
+import AddTeacher from '../components/AddTeacher';
 
 const Pdfs = () => {
 
   const teachers = useSelector((state) => state.teacher.data);
-  const { id } = useParams();
+  const pdfs = useSelector((state) => state.pdf.data);
+
+  const { id, year } = useParams();
+  console.log(year);
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [teacher, setTeacher] = useState()
   const [search, setSearch] = useState()
 
   useEffect(() => {
-    dispatch(getTeacherData())
+    dispatch(getTeacherPdf(id))
     let user = teachers.find((ele) => ele._id == id)
     setTeacher(user)
   }, [id]);
+
+  const [dialog, setDialoge] = useState({ open: false, id: "" })
+
+  function handleCloseDialoge() {
+    setDialoge({ open: false, id: "" })
+  }
+
+  const [update, setUpdate] = useState({ open: false, data: {} })
+  function handleCloseUpdate() {
+    setUpdate({ open: false, data: {} })
+  }
+
+  let filterdData = pdfs
+  if (search) {
+    filterdData = filterdData.filter((ele) => ele?.name?.includes(search) || ele?.year?.includes(search))
+  }
+  filterdData = filterdData.filter((ele) => ele.year == year)
 
   return (
     <>
@@ -37,36 +60,43 @@ const Pdfs = () => {
           </Stack>
           <img src={logo} placeholder='Logo' width="180px" height="90px" />
         </Stack>
-        <Stack direction="row" sx={{ justifyContent: "center", alignItems: "center" }}>
+        <Stack direction="row" gap={2} sx={{ justifyContent: "center", alignItems: "center" }}>
           <SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
+          <Button onClick={() => navigate(`/pdfs/${id}`)} color='secondary' sx={{ color: "secondary", fontWeight: "700", fontSize: "1.1rem", border: "1px solid #fff", height: "60px", borderRadius: "1rem" }} variant="outlined">السنة الدراسية</Button>
           <Button onClick={() => navigate("/")} color='secondary' sx={{ color: "secondary", fontWeight: "700", fontSize: "1.1rem", border: "1px solid #fff", height: "60px", borderRadius: "1rem" }} variant="outlined">الصفحة الرئيسية</Button>
         </Stack>
         <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <Card sx={{ display: "flex", alignItems: "center", flexDirection: "column", color: "#fff", maxWidth: 345, backgroundColor: "unset", boxShadow: ' 0 0 10px 1px rgba(255,255,255,0.5)' }} >
-              <Stack direction={"row"} sx={{ justifyContent: "space-between", width: "100% !important", flexGrow: "1" }}>
-                <DeleteIcon />
-                <Box sx={{ cursor: "pointer" }}>
-                  <img className='d-block m-auto' src={book} style={{ borderRadius: "50%" }} width="100px" height="100px" />
-                  <Typography fontSize="1rem" style={{ color: "var(--secondary)" }} variant='body2' sx={{ textAlign: "end", color: "secondary", transform: "translateY(-20px)" }}>تعديل <ModeEditOutlineIcon color='secondary' /></Typography>
-                </Box>
-                <div></div>
-              </Stack>
-              <Typography variant='h4'>اسم المك`رة </Typography>
-              <Typography variant='h5'>اسم المك`رة </Typography>
-              <Typography variant='h5'>اسم المك`رة </Typography>
-              <Stack direction="row" justifyContent="space-between" sx={{ width: "100%", padding: " 0 1rem " }}>
-                <Button variant='contained' type='submit' sx={{ background: 'linear-gradient(to right, #FF1105, #FCBB43)', fontWeight: 700 }}>طباعة</Button>
-                <Button variant='contained' type='submit' sx={{ background: 'linear-gradient(to right, #FF1105, #FCBB43)', fontWeight: 700 }}>معاينة</Button>
-              </Stack>
+          {filterdData?.map((ele) => (
+            <Grid item xs={4} key={ele._id}>
+              <Card sx={{ display: "flex", alignItems: "center", flexDirection: "column", color: "#fff", maxWidth: 345, backgroundColor: "unset", boxShadow: ' 0 0 10px 1px rgba(255,255,255,0.5)' }} >
+                <Stack direction={"row"} sx={{ padding: "5px", justifyContent: "space-between", width: "100% !important", flexGrow: "1" }}>
+                  <DeleteIcon style={{ color: "red", cursor: "pointer" }} onClick={() => setDialoge({ open: true, id: ele._id })} />
+                  <Box sx={{ cursor: "pointer", height: "120px" }} onClick={() => setUpdate({ open: true, data: ele })}>
+                    <img className='d-block m-auto' src={book} style={{ borderRadius: "50%" }} width="100px" height="100px" />
+                    <Typography fontSize="1rem" style={{ color: "var(--secondary)" }} variant='body2' sx={{ textAlign: "end", color: "secondary", transform: "translateY(-20px)" }}>تعديل <ModeEditOutlineIcon color='secondary' /></Typography>
+                  </Box>
+                  <div></div>
+                </Stack>
+                <Typography variant='h5' sx={{ margin: "5px 0", textDecoration: "1px solid primary" }}>{ele?.name}</Typography>
+                <Typography variant='h6' sx={{ margin: "5px 0" }}>{ele?.year}</Typography>
+                <Typography variant='h6' sx={{ margin: "5px 0" }}>أ /  {teacher?.name} </Typography>
+                <Stack direction="row" justifyContent="space-between" sx={{ width: "100%", padding: " 0 1rem " }}>
+                  <Button variant='contained' type='submit' sx={{ background: 'linear-gradient(to right, #FF1105, #FCBB43)', fontWeight: 700 }}>طباعة</Button>
+                  <Button variant='contained' type='submit' sx={{ background: 'linear-gradient(to right, #FF1105, #FCBB43)', fontWeight: 700 }}>معاينة</Button>
+                </Stack>
 
-              <div style={{ width: "100%", display: "flex", justifyContent: "end", padding: "0 30px 10px" }}>
-              </div>
-            </Card>
-          </Grid>
+                <div style={{ width: "100%", display: "flex", justifyContent: "end", padding: "0 30px 10px" }}>
+                </div>
+              </Card>
+            </Grid>
+          ))
+          }
         </Grid>
-        <AddPdf/>
+        <AddPdf />
       </Container>
+
+      <ConfirmationDialoge open={dialog.open} handleClose={handleCloseDialoge} id={dialog.id} />
+      <AddPdf update={update.open} data={update.data} handleCloseUpdate={handleCloseUpdate} />
     </>
   )
 }
