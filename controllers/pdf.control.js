@@ -9,7 +9,7 @@ const PdfsCtl = {
       res.status(400).send({ message: "File is required !!" })
     }
 
-    newPdfs.src = `/uploads/` + req.file.filename
+    newPdfs.src = `/images/pdf/` + req.file.filename
     await newPdfs.save()
     res.send()
   }),
@@ -31,7 +31,11 @@ const PdfsCtl = {
     let id = req.params.id
     await Pdfs.findByIdAndDelete(id)
     res.send()
-  })
+  }),
+  getTeacherPdfs: asyncHandler(async (req, res) => {
+    let data = await Pdfs.find({ teacher: req.params.id })
+    res.send(data)
+  }),
 };
 
 module.exports = PdfsCtl;

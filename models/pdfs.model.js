@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const PdfsSchema = new Schema({
   src :{type:String , required:true , trim : true},
   name :{type:String , required:true , trim : true},
-  pagesNo :{type : Number , required:true },
+  pagesNo :{type : Number , required:true },    
   paperCost :{type : Number , required:true },
   coverCost :{type : Number , required:true },
   teacher:{type : mongoose.Types.ObjectId , ref:"Teacher" , required:true},

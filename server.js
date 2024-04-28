@@ -5,6 +5,7 @@ const mongoose = require("mongoose")
 const routes = require("./routes/index.route")
 const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
+const cors = require("cors");
 
 //Database conncetion
  function dbConnection(){
@@ -22,6 +23,15 @@ const cookieParser = require("cookie-parser")
 app.use(morgan("dev"))
 app.use(express.json())
 app.use(cookieParser())
+
+app.use(
+    cors({
+      origin: "*",
+      credentials: true,
+    })
+  );
+  
+  app.options("*", cors());
 
 app.use("/api/images" , express.static("./uploads"))
 app.use("/api",routes)

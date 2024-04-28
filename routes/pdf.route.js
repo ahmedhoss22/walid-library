@@ -5,12 +5,13 @@ const { fileUpload } = require("../services/file-upload")
 const { pdfsSchema } = require("../validations/pdf.validate")
 
 router.route("/")
-  .post(fileUpload.single("file"), validate(pdfsSchema), pdfCtl.addPdfs)
+  .post(fileUpload("pdf").single("file"), validate(pdfsSchema), pdfCtl.addPdfs)
   .get(pdfCtl.getAllPdfss)
 
 router.route("/:id")
-  .patch(fileUpload.single("file"), validateParamsId, pdfCtl.updatePdfs)
+  .patch(fileUpload("pdf").single("file"), validateParamsId, pdfCtl.updatePdfs)
   .delete(validateParamsId, pdfCtl.deletePdfs)
+  .get(validateParamsId, pdfCtl.getTeacherPdfs)
 
 
 module.exports = router;

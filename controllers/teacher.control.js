@@ -3,6 +3,9 @@ const Teacher = require("../models/teachers.model")
 
 const TeacherCtl = {
   addTeacher: asyncHandler(async (req, res) => {
+    if (req?.file) {
+      req.body.image = "/images/teacher/" + req.file.filename
+    }
     let newTeacher = new Teacher(req.body)
     await newTeacher.save()
     res.send()
