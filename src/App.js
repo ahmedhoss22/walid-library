@@ -1,25 +1,48 @@
-import logo from './logo.svg';
+import { MemoryRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import icon from './assets/icon.svg';
 import './App.css';
+import Home from './Pages/Home';
+import theme from "./utilities/Theme"
+import { ThemeProvider } from '@mui/material';
+import toast, { Toaster } from "react-hot-toast";
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+import TeacherContent from './Pages/TeacherContent';
+import Pdfs from './Pages/Pdfs';
+import Year from './Pages/Year';
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Toaster
+        position="top-center"
+        gutter={8}
+        containerStyle={{ margin: "12px" }}
+        toastOptions={{
+          success: {
+            duration: 3000,
+          },
+          error: {
+            duration: 5000,
+          },
+          style: {
+            fontSize: "16px",
+            padding: "16px 24px",
+          },
+        }}
+      />
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/teacher-content/:id" element={<TeacherContent />} />
+              <Route path="/pdfs/:id" element={<Year />} />
+              <Route path="/pdfs/:id/:year" element={<Pdfs />} />
+            </Routes>
+          </Router>
+        </ThemeProvider>
+      </Provider>
+    </>
   );
 }
-
-export default App;
