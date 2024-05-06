@@ -6,7 +6,7 @@ const { pdfsSchema } = require("../validations/pdf.validate")
 
 router.route("/")
   .post(fileUpload("pdf").single("file"), validate(pdfsSchema), pdfCtl.addPdfs)
-  .get(pdfCtl.getAllPdfss)
+  .get(pdfCtl.getAllPdfs)
 
 router.route("/:id")
   .patch(fileUpload("pdf").single("file"), validateParamsId, pdfCtl.updatePdfs)

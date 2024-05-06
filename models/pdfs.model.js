@@ -7,6 +7,7 @@ const PdfsSchema = new Schema({
   pagesNo :{type : Number , required:true },    
   paperCost :{type : Number , required:true },
   coverCost :{type : Number , required:true },
+  oneCopyCost :{type : Number  },
   teacher:{type : mongoose.Types.ObjectId , ref:"Teacher" , required:true},
   type :{type : String , required:true , trim :true },
   year :{type : String , required:true , trim :true },

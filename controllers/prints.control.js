@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler")
-const Prints = require("../models/Prints.model")
+const Prints = require("../models/prints.model")
 const Teacher = require("../models/teachers.model")
 const Pdfs = require("../models/pdfs.model")
 
@@ -21,7 +21,7 @@ const PrintsCtl = {
 
     res.send()
   }),
-  getAllPrintss: asyncHandler(async (req, res) => {
+  getAllPrints: asyncHandler(async (req, res) => {
     let data = await Prints.find()
     res.send(data)
   }),

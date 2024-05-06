@@ -5,7 +5,7 @@ const { printsSchema } = require("../validations/prints.validate")
 
 router.route("/")
   .post(validate(printsSchema), printsCtl.addPrints)
-  .get(printsCtl.getAllPrintss)
+  .get(printsCtl.getAllPrints)
 
 router.route("/:id")
   .patch(validateParamsId, printsCtl.updatePrints)

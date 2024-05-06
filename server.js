@@ -32,9 +32,9 @@ app.use(
   );
   
   app.options("*", cors());
-
-app.use("/api/images" , express.static("./uploads"))
-app.use("/api",routes)
+   
+  app.use("/api/images" , express.static("./uploads"))
+  app.use("/api",routes)
 
 app.all("*",(req,res)=>{
     res.status(404).send({message:"Invalid Route"})

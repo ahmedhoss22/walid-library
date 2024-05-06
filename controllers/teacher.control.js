@@ -25,10 +25,25 @@ const TeacherCtl = {
     res.send()
   }),
   addPayment: asyncHandler(async (req, res) => {
-    let teacher = await Teacher.findById(req.body.teacher)
-    teacher.balance += req.body.payment
-    await teacher.save()
-    res.send(teacher)
+    const { teacher, payment } = req.body;
+    let teacherDoc = await Teacher.findById(teacher);
+    if (!teacherDoc) {
+      return res.status(404).send("Teacher not found");
+    }
+    
+    const beforeBalance = teacherDoc.balance;
+    teacherDoc.balance += payment;
+    const afterBalance = teacherDoc.balance;
+  
+    teacherDoc.transactions.push({
+      amount: payment,
+      beforeBalance,
+      afterBalance
+    });
+  
+    await teacherDoc.save();
+  
+    res.send(teacherDoc);
   })
 };
 
