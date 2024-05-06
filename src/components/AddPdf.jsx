@@ -20,7 +20,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 600,
+  maxWidth: 600,
   bgcolor: '#1D2D3C',
   color: "#fff",
   border: '2px solid #FCBB43',
@@ -141,18 +141,39 @@ const AddPdf = ({ update, data, handleCloseUpdate }) => {
   }, [data])
   return (
     <>
-      <div style={{ position: "fixed", right: "5rem", bottom: "5rem" }} onClick={handleOpen}>
+      <div style={{ position: "fixed", right: "5rem", bottom: "5rem"
+      ,borderRadius: "10px",  
+        padding: "0px 5px",  
+        boxShadow: "0 1px 2px 0 rgb(6 7 0 / 1)"   ,
+        background:"#1D2D3C"
+     }} onClick={handleOpen}>
         <AddIcon color="secondary" sx={{ fontSize: "3.5rem", cursor: "pointer", transition: ".4s", '&:hover': { transform: 'scale(1.2)', }, }} />
       </div>
 
       <Modal open={open || update} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
-          <h2 style={{ direction: "rtl", color: "" }}>{update ? "تعديل" : "اضافة"} مذكرة</h2>
+          <h2  style={{ direction: "rtl", textAlign:'center' ,color: "white",
+    textShadow: "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43"}}>{update ? "تعديل" : "اضافة"} مذكرة</h2>
           <Stack direction="column" alignItems="center" justifyContent="center">
-            <img onClick={handleInputClick} src={formIcon} alt='formIcon' width="100px" height="100px" style={{ cursor: "pointer", borderRadius: "50%" }} />
+            <img onClick={handleInputClick} src={formIcon} alt='formIcon' width="100px" height="100px" style={{ cursor: "pointer" }} />
             <p>{imageName ? imageName : data?.name || "لا يوجد مذكرة"}</p>
             <input onChange={handleImageUpload} required accept=".pdf " type='file' ref={imgRef} style={{ display: "none" }} />
             <form onSubmit={formik.handleSubmit} style={{ marginTop: "1rem" }}>
+            <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <FormLabel id="demo-radio-buttons-group-label" sx={{ color: "#fff", textAlign:"center" }}>النوع</FormLabel>
+                    <RadioGroup
+                      aria-labelledby="demo-radio-buttons-group-label"
+                      value={typeRadioBtn}
+                      name="type"
+                      onChange={e => setTypeRadioBtn(e.target.value)}
+                      sx={{ flexDirection: "row", direction: "rtl" , justifyContent:"space-evenly" }}
+                    >
+                      <FormControlLabel value={"حلزوني"} control={<Radio />} label="حلزوني" />
+                      <FormControlLabel value={"other"} control={<Radio />} label="اخرى" />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
               <Grid spacing={2} container sx={{ direction: "rtl" }}>
                 <Grid item xs={6}>
                   <InputField fullWidth required type='text' name="name" variant='outlined' label="الأسم" value={formik.values?.name} onChange={formik.handleChange} />
@@ -211,21 +232,7 @@ const AddPdf = ({ update, data, handleCloseUpdate }) => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <FormLabel id="demo-radio-buttons-group-label" sx={{ color: "#fff" }}>النوع</FormLabel>
-                    <RadioGroup
-                      aria-labelledby="demo-radio-buttons-group-label"
-                      value={typeRadioBtn}
-                      name="type"
-                      onChange={e => setTypeRadioBtn(e.target.value)}
-                      sx={{ flexDirection: "row", direction: "rtl" }}
-                    >
-                      <FormControlLabel value={"حلزوني"} control={<Radio />} label="حلزوني" />
-                      <FormControlLabel value={"other"} control={<Radio />} label="اخرى" />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
+            
                 {typeRadioBtn == "other" && <Grid item xs={6}>
                   <InputField fullWidth required type='text' name="type" variant='outlined' label="اخرى" value={formik.values?.type} onChange={formik.handleChange} />
                 </Grid>}

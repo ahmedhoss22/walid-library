@@ -11,8 +11,19 @@ import { getTeacherData } from '../redux/slices/teacher.slice';
 import { apiUrl } from '../config/api';
 import { useNavigate } from 'react-router-dom';
 import SearchInput from '../components/SearchInput';
-
+import Slider from "react-slick";
+   
 const Home = () => {
+  const settings = {
+    className: "center",
+    centerMode: true,
+    infinite: false,       
+    centerPadding: "5px",
+    slidesToShow: 1, 
+    speed: 500,
+    rows: 2,
+    slidesPerRow: 3
+  };
 
   const teachers = useSelector((state)=>state.teacher.data)
   const dispatch = useDispatch()
@@ -34,22 +45,31 @@ const Home = () => {
         <FormControl sx={{ flexGrow: 1 }}>
           <SearchInput value={search} onChange={(e) => setSearch(e.target.value)}/>
         </FormControl>
-        <img src={logo} placeholder='Logo' width="180px" height="90px" />
+        <img src={logo}  placeholder='Logo' width="180px" height="90px" />
       </Stack>
-      <Grid container spacing={2} sx={{ marginTop: 4 }}>
+      {/* <Grid container spacing={2} sx={{ marginTop: 4 }}> */}
+      <div className="slider-container">
+      
+    <Slider {...settings}>
         {filterData.map((ele) => (
-          <Grid onClick={()=>navigate("/teacher-content/" + ele._id)} key={ele._id} item xs={3} sx={{ cursor: "pointer", transition: ".4s", '&:hover': { transform: 'translateY(-4px)' } }}>
+          <div style={{margin:"30px " , padding:"20px"}}>
+        <Grid onClick={()=>navigate("/teacher-content/" + ele?._id)} key={ele._id} item xs={3} sx={{ margin:"15px", cursor: "pointer", transition: ".4s", '&:hover': { transform: 'translateY(-4px)' } }}>
             <Card sx={{ display: "flex", alignItems: "center", flexDirection: "column", color: "#fff", maxWidth: 345, backgroundColor: "unset", boxShadow: ' 0 0 10px 1px rgba(255,255,255,0.5)' }} >
-              <img className='d-block m-auto' src={apiUrl+ele?.image} style={{ borderRadius: "50%" }} width="150px" height="150px"/>
-              <p style={{ textAlign: "center", margin: "10px 0" }}>{ele.name}</p>
+              <img className='d-block m-auto' src={apiUrl+ele?.image} style={{ borderRadius: "50%" ,padding:"10px" }} width="150px" height="150px"/>
+              <p style={{ textAlign: "center", margin: "10px 0" ,color: "white",
+    textShadow: "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43"}}>{ele.name}</p>
               <div style={{ width: "100%", display: "flex", justifyContent: "end", padding: "0 30px 10px" }}>
                 <EastIcon color='#fff' />
               </div>
             </Card>
           </Grid>
-        ))}
+        </div>
+    
+  ))}
+  </Slider>
+  </div>
 
-      </Grid>
+      {/* </Grid> */}
       <AddTeacher />
     </Container>
   );

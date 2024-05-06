@@ -16,7 +16,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function ConfirmationDialoge({ id, open, handleClose }) {
-
+ 
 
   const dispatch = useDispatch()
   function handleDelete() {

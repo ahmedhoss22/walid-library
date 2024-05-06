@@ -21,7 +21,7 @@ const Year = () => {
   useEffect(() => {
     const uniqueYears = new Set();
 
-    pdfs.forEach((pdf) => {
+    pdfs?.forEach((pdf) => {
       uniqueYears.add(pdf?.year);
     });
     const uniqueYearsArray = Array.from(uniqueYears);
@@ -35,10 +35,11 @@ const Year = () => {
       <Container sx={{ marginTop: "1.5rem" }}>
         <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
           <KeyboardBackspaceIcon sx={{ color: "#fff", fontSize: "3rem", cursor: "pointer" }} onClick={() => navigate("/")} />
-          <img src={logo} placeholder='Logo' width="180px" height="90px" />
+          <img src={logo} style={{cursor:"pointer"}} onClick={()=>navigate('/teacher-content/'+id)} placeholder='Logo' width="180px" height="90px" />
         </Stack>
-        <Typography variant='h3' sx={{ textAlign: "center", color: "#fff" }}>السنة الدراسية</Typography>
-        <Grid container spacing={2} sx={{ marginTop: "2rem", justifyContent: "center" }}>
+        <Typography variant='h3' sx={{ textAlign: "center", color: "white",
+    textShadow: "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43"}}>السنة الدراسية</Typography>
+        <Grid container spacing={2} sx={{ marginTop: "2rem", justifyContent: "center" ,textAlign:"center" }}>
           {years.map((year) => (
             <Grid item xs={3}>
               <Button onClick={() => navigate(`/pdfs/${id}/${year}`)} variant='contained' sx={{ color: "#fff", fontSize: "1.5rem" }} color='secondary'>{year}</Button>
