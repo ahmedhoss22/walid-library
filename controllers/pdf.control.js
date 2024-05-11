@@ -14,8 +14,7 @@ const PdfsCtl = {
     res.send()
   }),
   getAllPdfs: asyncHandler(async (req, res) => {
-    let data = await Pdfs.find().populate({ path: "teacher" ,select:"_id"});
-     
+    let data = await Pdfs.find().populate({ path: "teacher", select: ["_id", "name"] });
     res.send(data)
   }),
   updatePdfs: asyncHandler(async (req, res) => {
@@ -35,17 +34,17 @@ const PdfsCtl = {
     res.send()
   }),
   getTeacherPdfs: asyncHandler(async (req, res) => {
-    let data = await Pdfs.find({ teacher: req.params.id }) 
+    let data = await Pdfs.find({ teacher: req.params.id })
 
-data.forEach(pdf => {
-  const oneCopyCost = (pdf.pagesNo * pdf.paperCost) + pdf.coverCost;
-  // console.log(oneCopyCost);
-  pdf.oneCopyCost = oneCopyCost;  
-});
+    data.forEach(pdf => {
+      const oneCopyCost = (pdf.pagesNo * pdf.paperCost) + pdf.coverCost;
+      // console.log(oneCopyCost);
+      pdf.oneCopyCost = oneCopyCost;
+    });
 
-const totalCost = data.reduce((total, pdf) => total + pdf.oneCopyCost, 0);
-data.totalCost = totalCost
-// console.log(totalCost);
+    const totalCost = data.reduce((total, pdf) => total + pdf.oneCopyCost, 0);
+    data.totalCost = totalCost
+    // console.log(totalCost);
 
     res.send(data)
   }),

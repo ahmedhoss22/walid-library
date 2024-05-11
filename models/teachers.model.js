@@ -1,11 +1,12 @@
-const mongoose =require("mongoose")
-const Schema= mongoose.Schema
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
 
-const Teacher= mongoose.model("Teacher",new Schema({
+const Teacher = mongoose.model("Teacher", new Schema({
   name: { type: String, required: true, trim: true },
   image: { type: String, trim: true, default: "/images/teacher/default.png" },
   balance: { type: Number, default: 0 },
   pdf: { type: mongoose.Types.ObjectId, ref: "Pdfs" },
+  type: { type: String, enum: ["deposite", "loan"] },
   transactions: [
     {
       amount: { type: Number, required: true },
@@ -14,6 +15,5 @@ const Teacher= mongoose.model("Teacher",new Schema({
       createdAt: { type: Date, default: Date.now }
     }
   ]
-
 }))
 module.exports = Teacher    
