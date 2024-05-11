@@ -1,0 +1,7 @@
+.custom-select {
+  transition: border-color 0.3s;
+}
+
+.custom-select:hover, .custom-select:focus {
+  border-color: white !important; /* Apply white border color on hover and focus */
+}
