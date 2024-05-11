@@ -8,7 +8,7 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import { apiUrl } from "../config/api";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";  
-const { ipcRenderer } = window.require('electron');
+// const { ipcRenderer } = window.require('electron');
 
  
 const style = {
@@ -31,7 +31,7 @@ export default function Preview({ open, handleClose, src }) {
 
   const handlePrint = (url) => {
     ipcRenderer.send('print-pdf', url);
-};
+  };
 
  
 
