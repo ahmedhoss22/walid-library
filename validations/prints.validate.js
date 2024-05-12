@@ -14,5 +14,9 @@ module.exports = {
     pdf: Joi.string().required().messages({
       "string.empty": "PDF ID is required",
     }),
+    type: Joi.string().messages({
+      "string.empty": "PDF ID is required",
+    }),
   }),
+  
 };

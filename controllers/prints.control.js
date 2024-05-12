@@ -21,6 +21,18 @@ const PrintsCtl = {
 
     res.send()
   }),
+  addCustomerPrint: asyncHandler(async (req, res) => {
+    const data = req.body
+
+    let oneCopyCost = (data.pagesNo * data.paperCost) + data.coverCost
+    let totalCost = oneCopyCost * data.copies
+
+    let newPrints = new Prints({ ...req.body, cost: totalCost })
+    await newPrints.save()
+
+    res.send()
+  }),
+
   getAllPrints: asyncHandler(async (req, res) => {
     let data = await Prints.find()
     res.send(data)

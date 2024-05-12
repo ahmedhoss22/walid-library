@@ -4,8 +4,10 @@ const { validate, validateParamsId } = require("../services/validate.service")
 const { printsSchema } = require("../validations/prints.validate")
 
 router.route("/")
-  .post(validate(printsSchema), printsCtl.addPrints)
+  .post( printsCtl.addPrints)
   .get(printsCtl.getAllPrints)
+
+router.post("/customer", printsCtl.addCustomerPrint)
 
 router.route("/:id")
   .patch(validateParamsId, printsCtl.updatePrints)
