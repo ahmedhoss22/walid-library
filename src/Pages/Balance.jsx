@@ -29,7 +29,7 @@ import { getTeacherData } from "../redux/slices/teacher.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { getTeacherPdf } from "../redux/slices/pdf.slice";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace"; 
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { format } from "date-fns";
 import { IconButton } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -52,45 +52,37 @@ const style = {
   p: 4,
 };
 
-const Balance = () => { 
- 
+const Balance = () => {
+
   const viewerRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id, year } = useParams();
   const [teacher, setTeacher] = useState();
   const teachers = useSelector((state) => state.teacher.data);
+
   const teacherPrintedpdf = useSelector((state) => state.print.data);
   const [isOpenTable1, setIsOpenTable1] = useState(false);
   const [teacherPrintedPdf, setTeacherPrintedPdf] = useState([]);
+  const [table, setTable] = useState([])
 
- 
 
   const handlePrint = useReactToPrint({
     content: () => viewerRef.current,
   });
- 
+
 
   useEffect(() => {
     dispatch(getPrints())
-  }, [id]);
-  
-  useEffect(() => {
-    let printedpdf = teacherPrintedpdf.find((ele) => ele?.teacher == id);
+    dispatch(getTeacherData(id));
+    let printedpdf = teacherPrintedpdf.filter((ele) => ele?.teacher == id);
     setTeacherPrintedPdf(printedpdf);
-  }, [teacherPrintedPdf]);
-  
-  console.log(teacherPrintedPdf);
-
-  // useEffect(() => {
-  //   let pdf = teacherpdf.find((ele) => ele._id == id);
-  //   setTeacherPdf(teacherpdf);
-  // }, [id]);
+  }, [id]);
 
   const toggleTable1 = () => {
     setIsOpenTable1(!isOpenTable1);
   };
-  
+
 
   const formik = useFormik({
     initialValues: {
@@ -100,10 +92,11 @@ const Balance = () => {
   });
 
   function handleSubmit(values) {
-    const payment = values.payment; 
+    const payment = values.payment;
     Api.post("/teacher/payment", { teacher: id, payment })
       .then(() => {
         notifySuccess("تم سداد المبلغ  ");
+        dispatch(getTeacherData(id));
         formik.resetForm();
       })
       .catch((error) => {
@@ -112,10 +105,23 @@ const Balance = () => {
   }
 
   useEffect(() => {
-    dispatch(getTeacherData(id));
     let user = teachers.find((ele) => ele._id == id);
+    let temp = user?.transactions.map((ele) => {
+      return { ...ele, type: "دفع" }
+    })
+    let tempPrints = teacherPrintedPdf.map((ele) => {
+      return { ...ele, type: "طباعة", amount: ele.cost || 0 }
+    })
+    let all = [...tempPrints, ...temp]
+    all.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+
+    setTable(all)
     setTeacher(user);
-  }, []);
+
+  }, [teachers]);
+
+  console.log(teacherPrintedPdf);
 
   return (
     <Container sx={{ marginTop: "1.5rem" }}>
@@ -173,23 +179,6 @@ const Balance = () => {
         </h2>
         <Stack direction="column" alignItems="center" justifyContent="center">
           <img src={calc} alt="calc" width="175px" height="175px" />
-
-          {/* <Grid item xs={6}>
-                  <FormControl fullWidth>
-                    <FormLabel id="demo-radio-buttons-group-label" sx={{ color: "#fff" , direction: "rtl" ,textAlign:"center" }}>طريقة الدفع</FormLabel>
-                    <RadioGroup
-                      aria-labelledby="demo-radio-buttons-group-label"
-                      value={typeRadioBtn}
-                      name="type"
-                      onChange={e => setTypeRadioBtn(e.target.value)}
-                      sx={{ flexDirection: "row", direction: "rtl" ,justifyContent:"space-evenly"}}
-                    >
-                      <FormControlLabel value={"أجل"} control={<Radio />} label="أجل" />
-                      <FormControlLabel value={"كاش"} control={<Radio />} label="كاش" />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid> */}
-
           <h1
             className="text-center"
             style={{
@@ -285,114 +274,48 @@ const Balance = () => {
         <div ref={viewerRef}>
           <table
             style={{
-              background: "#1D2D3C",
+              background: "#fff",
               margin: "10px",
-              border: "2px solid #FCBB43",
+              // border: "2px solid #FCBB43",
               width: "100%",
+              color: "#000"
             }}
           >
             <thead>
               <tr>
-                <th style={{ color: "white", textAlign: "center" }}>
-                  التفاصيل
-                </th>{" "}
-                <th style={{ color: "white", textAlign: "center" }}>
+                <th style={{ color: "#000", textAlign: "center" }}>
                   تاريخ العملية
                 </th>{" "}
-                <th style={{ color: "white", textAlign: "center" }}>المبلغ</th>{" "}
-                <th style={{ color: "white", textAlign: "center" }}>
+                <th style={{ color: "#000", textAlign: "center" }}>المبلغ</th>{" "}
+                <th style={{ color: "#000", textAlign: "center" }}>
                   نوع العملية
+                </th>
+              </tr>
+              <tr>
+                <th colSpan={4}>
+                  <hr style={{ width: "100%" }} />
                 </th>
               </tr>
             </thead>
             <tbody>
-              {teacher?.transactions?.map((row) => (
+              {table?.map((row) => (
                 <tr key={row.name}>
-                  <td style={{ color: "white", textAlign: "center" }}>
-                    -
+                  <td style={{ color: "#000", textAlign: "center" }}>
+                    {format(new Date(row?.createdAt), "dd-MM-yyyy")}
                   </td>{" "}
-                  <td style={{ color: "white", textAlign: "center" }}>
-                    {format(new Date(row?.createdAt), "dd/MM/yyyy")}
-                  </td>{" "}
-                  <td style={{ color: "white", textAlign: "center" }}>
-                    {row?.amount}  : تم سداد 
+                  <td style={{ color: "#000", textAlign: "center" }}>
+                    {row?.amount} 
                   </td>
-                  <td style={{ color: "white", textAlign: "center" }}>
-                   دفع
+                  <td style={{ color: "#000", textAlign: "center" }}>
+                    {row?.type}
                   </td>
                 </tr>
               ))}
-
-{/* {teacherPdf.map((row) => (
-                <tr key={row.name}>
-                  <td style={{ color: "white", textAlign: "center" }}>
-                  {row?.name}  : اسم المذكرة 
-                  </td>{" "}
-                  <td style={{ color: "white", textAlign: "center" }}>
-                    {format(new Date(row?.createdAt), "dd/MM/yyyy")}
-                  </td>{" "}
-                  <td style={{ color: "white", textAlign: "center" }}>
-                    {row?.oneCopyCost}  : سعر النسخة 
-                  </td>
-                  <td style={{ color: "white", textAlign: "center" }}>
-                   طباعة
-                  </td>
-                </tr>
-              ))} */}
-              
+              <tr></tr>
             </tbody>
           </table>
         </div>
       )}
-
-      {/* <div style={{    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'}}>     <IconButton onClick={toggleTable2}>
-        {isOpenTable2 ? <KeyboardArrowUpIcon  sx={{ color:'#FCBB43' }}/> : <KeyboardArrowDownIcon  sx={{ color:'#FCBB43' }} />}
-      </IconButton> 
-<h3
-            style={{
-              color: "#fff",
-              color: "white",  
-              textAlign:"center",
-              margin:"25px 0px",
-              textShadow:
-                "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43",
-            }}
-          >
-            الحسابات النسخة
-          </h3>
-      </div>
-      
-      {isOpenTable2 && (  
-
-          <TableContainer component={Paper} dir="rtl" style={{   
-    
-          background: "#1D2D3C",
-      margin:"10px",   
-  border: "2px solid #FCBB43",}}>
-      <Table  sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow> 
-            <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>اسم اسم المذكرة</TableCell>
-            <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>       الحساب الكلي للنسخة</TableCell> 
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {teacherPdf?.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >  
-            
-              <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>{row?.name}</TableCell>
-              <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>{row?.oneCopyCost}</TableCell> 
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer> 
-      )} */}
     </Container>
   );
 };

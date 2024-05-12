@@ -15,6 +15,7 @@ export const getTeacherData= createAsyncThunk(
 
 const initialState = {
   data: [],
+  all: [],
 };
 
 export const TeacherSlice = createSlice({

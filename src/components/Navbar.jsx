@@ -13,7 +13,6 @@ const Navbar = ({ children }) => {
     setActive(no)
     navigate(route)
   }
-  console.log(active);
 
   return (
     <Stack direction="row-reverse" justifyContent={"space-around"} sx={{ border: "1px solid #fff", borderRadius: "1rem", padding: "0 32px", gap: { lg: "5rem", md: "4rem" } }}>

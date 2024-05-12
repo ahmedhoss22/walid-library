@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import {
   Button,
@@ -16,10 +16,20 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import AddPayment from "../components/AddPayment";
+import { useDispatch, useSelector } from "react-redux";
+import { getPrints } from "../redux/slices/print.slice";
+import { getPdfs } from "../redux/slices/pdf.slice";
+import { getTeacherData } from "../redux/slices/teacher.slice";
+import { format } from "date-fns";
 
 const Payments = () => {
   const [search, setSearch] = useState("");
+  const prints = useSelector((state) => state.print.data)
+  const pdfs = useSelector((state) => state.pdf.all)
+  const teachers = useSelector((state) => state.teacher.data)
+
   const rows = [];
+  const dispatch = useDispatch()
   const [modal, setModal] = useState({
     open: false,
     update: false,
@@ -27,6 +37,22 @@ const Payments = () => {
   });
   const handleClose = () =>
     setModal({ open: false, update: false, data: null });
+  useEffect(() => {
+    dispatch(getPrints())
+    dispatch(getPdfs())
+    dispatch(getTeacherData())
+  }, [])
+
+  function getPdf(id, field) {
+    let temp = pdfs.find((ele) => ele._id == id)
+    console.log(temp);
+    return temp[field]
+  }
+
+  function getTeacherName(id) {
+    let temp = teachers.find((ele) => ele._id == id)
+    return temp?.name
+  }
 
   return (
     <Container sx={{ marginTop: "1.5rem" }}>
@@ -60,6 +86,7 @@ const Payments = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </FormControl>
+        <input type="date" style={{ backgroundColor: "unset", border: "none", color: "#fff", height: "50px", margin: "auto" }} />
       </Navbar>
       <Button
         onClick={() => setModal({ open: true, update: false })}
@@ -76,24 +103,24 @@ const Payments = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>الاسم</TableCell>
-              <TableCell align="right">سعر الورقة</TableCell>
-              <TableCell align="right">عدد الورق</TableCell>
-              <TableCell align="right">التكلفة</TableCell>
+              <TableCell align="center">الاسم</TableCell>
+              <TableCell align="center">عدد  النسخ</TableCell>
+              <TableCell align="center">التكلفة</TableCell>
+              <TableCell align="center">التاريح</TableCell>
+              <TableCell align="center">الوقت</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {prints.map((row) => (
               <TableRow
                 key={row.name}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
+              <TableCell align="center">{row?.type == "teacher" ? getTeacherName(row.teacher) : row?.name}</TableCell>
+                <TableCell align="center">{row?.copies}</TableCell>
+                <TableCell align="center">{row.cost}</TableCell>
+                <TableCell align="center">{format(new Date(row?.createdAt), "dd-MM-yyyy")}</TableCell>
+                <TableCell align="center">{format(new Date(row?.createdAt), "h-m")}</TableCell>
               </TableRow>
             ))}
           </TableBody>
