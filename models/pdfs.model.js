@@ -12,6 +12,8 @@ const PdfsSchema = new Schema({
   type :{type : String , required:true , trim :true },
   year :{type : String , required:true , trim :true },
   paperPrint :{type : String  , enum :["وش" , "وش و ظهر"], required:true , trim :true },
+  createdAt: { type: Date, default: Date.now }
+
 })
 
 const Pdfs = mongoose.model("Pdfs" , PdfsSchema)
