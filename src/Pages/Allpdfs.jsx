@@ -1,9 +1,13 @@
+import Navbar from '../components/Navbar'
+import { Container, FormControl, InputAdornment, OutlinedInput } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search';
+import AddPdf from '../components/AddPdf';
+import ConfirmationDialoge from '../components/ConfirmationDialoge';
 import {
   Box,
   Button,
   Card,
   CardMedia,
-  Container,
   Grid,
   Stack,
   TextField,
@@ -20,18 +24,16 @@ import SearchInput from "../components/SearchInput";
 import DeleteIcon from "@mui/icons-material/Delete";
 import book from "../images/book.png";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
-import AddPdf from "../components/AddPdf";
-import { getTeacherPdf } from "../redux/slices/pdf.slice";
-import ConfirmationDialoge from "../components/ConfirmationDialoge";
+import { getPdfs, getTeacherPdf } from "../redux/slices/pdf.slice";
 import AddTeacher from "../components/AddTeacher";
 // import { ipcRenderer } from 'electron';
 import Preview from "../components/Preview";
 import CopyNumber from "../components/CopyNumber";
 import Slider from "react-slick";
 import { PDFDocument, rgb } from 'pdf-lib';
-import teacher from "../images/teacher.png"
 
-const Pdfs = () => {
+const Allpdfs = () => {
+
   const settings = {
     className: "center",
     centerMode: true,
@@ -39,23 +41,19 @@ const Pdfs = () => {
     centerPadding: "5px",
     slidesToShow: 1,
     speed: 500,
-    rows: 1,
+    rows: 2,
     slidesPerRow: 3,
   };
-  const teachers = useSelector((state) => state?.teacher?.data);
-  const pdfs = useSelector((state) => state?.pdf?.data);
+  const pdfs = useSelector((state) => state?.pdf?.all);
 
-  const { id, year } = useParams();
+  console.log(pdfs);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [search, setSearch] = useState();
 
-  const [teacher, setTeacher] = useState();
   useEffect(() => {
-    dispatch(getTeacherPdf(id));
-    let user = teachers.find((ele) => ele?._id == id);
-    setTeacher(user);
-  }, [id]);
+    dispatch(getPdfs());
+  }, []);
 
   const [dialog, setDialoge] = useState({ open: false, id: "" });
 
@@ -71,10 +69,9 @@ const Pdfs = () => {
   let filterdData = pdfs;
   if (search) {
     filterdData = filterdData?.filter(
-      (ele) => ele?.name?.includes(search) || ele?.year?.includes(search)
+      (ele) => ele?.name?.includes(search) || ele?.year?.includes(search) || ele?.teacher?.name?.includes(search)
     );
   }
-  filterdData = filterdData?.filter((ele) => ele?.year == year);
   const [modal, setModal] = useState({
     open: false,
     update: false,
@@ -122,9 +119,9 @@ const Pdfs = () => {
       if (printWindow) {
         printWindow.onload = () => {
           printWindow.print();
-          setTimeout(()=>{
-            setCopyModal({open:true})
-          },3000)
+          setTimeout(() => {
+            setCopyModal({ open: true })
+          }, 3000)
 
         };
       } else {
@@ -138,66 +135,34 @@ const Pdfs = () => {
   return (
     <>
       <Container sx={{ marginTop: "1.5rem" }}>
-        <Stack
-          direction="row"
-          sx={{ justifyContent: "space-between", alignItems: "center" }}
-        >
-          <Stack
-            sx={{
-              marginTop: "1.5rem",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "1.5rem",
-            }}
-            direction={"row-reverse"}
-          >
-            <img
-              className="d-block m-auto"
-              src={apiUrl + teacher?.image}
-              onClick={() => navigate("/teacher-content/" + teacher?._id)}
-              style={{ borderRadius: "50%", cursor: "pointer" }}
-              width="80px"
-              height="80px"
-              alt="pdf"
-            />
-            <h3
-              style={{
+        <Navbar >
+          <FormControl sx={{ flexGrow: 1 }}>
+            <OutlinedInput
+              id="outlined-adornment-amount"
+              startAdornment={<InputAdornment position="start"><SearchIcon color='secondary' /></InputAdornment>}
+              sx={{
+                '& .MuiOutlinedInput-notchedOutline': {
+                  border: 'none',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  border: 'none',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  border: 'none',
+                },
                 color: "#fff",
-                color: "white",
-                textShadow:
-                  "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43",
+                height: "60px",
+                margin: "15px",
+                letterSpacing: "2px",
+                borderRadius: "1rem"
               }}
-            >
-              {teacher?.name}
-            </h3>
-          </Stack>
-          <img
-            src={logo}
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate("/")}
-            placeholder="Logo"
-            width="180px"
-            height="90px"
-            alt="pdf"
-          />
-        </Stack>
-        <Stack
-          direction="row"
-          gap={2}
-          sx={{ justifyContent: "center", alignItems: "center" }}
-        >
-          <SearchInput
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <Button onClick={() => navigate(`/pdfs/${id}`)} color="secondary" sx={{ color: "secondary", fontWeight: "700", fontSize: "1.1rem", border: "1px solid #fff", height: "60px", borderRadius: "1rem", }} variant="outlined">
-            السنة الدراسية
-          </Button>
-          <Button onClick={() => navigate("/")} color="secondary" sx={{ color: "secondary", fontWeight: "700", fontSize: "1.1rem", border: "1px solid #fff", height: "60px", borderRadius: "1rem" }} variant="outlined">
-            الصفحة الرئيسية
-          </Button>
-        </Stack>
-        {/* <Grid container spacing={2}> */}
+              placeholder='Search'
+              value={search} onChange={(e) => setSearch(e.target.value)}
+            />
+          </FormControl>
+        </Navbar>
+
+
         <div className="slider-container">
           <Slider {...settings}>
             {filterdData?.map((ele) => (
@@ -207,7 +172,7 @@ const Pdfs = () => {
                   <Stack
                     direction={"row"}
                     sx={{
-                      padding: "5px",
+                      padding: "5px 5px 0",
                       justifyContent: "space-between",
                       width: "100% !important",
                       flexGrow: "1",
@@ -222,20 +187,20 @@ const Pdfs = () => {
                       onClick={() => setUpdate({ open: true, data: ele })}
                     >
                       <img className="d-block m-auto" src={book} width="100px" height="100px" alt="pdf" />
-                      <Typography fontSize="1rem" style={{ color: "var(--secondary)" }} variant="body2" sx={{ textAlign: "end", color: "secondary", transform: "translateY(-20px)" }}>
+                      <Typography fontSize="1rem" style={{ color: "var(--secondary)" }} variant="body2" sx={{ textAlign: "end", color: "secondary", transform: "translateY(-15px)" }}>
                         تعديل <ModeEditOutlineIcon color="secondary" />
                       </Typography>
                     </Box>
                     <div></div>
                   </Stack>
+                  <Typography variant="h5" sx={{ margin: "00", textDecoration: "1px solid primary" }}>
+                  أ/ {ele?.teacher?.name} 
+                </Typography>
                   <Typography variant="h5" sx={{ margin: "5px 0", textDecoration: "1px solid primary" }}>
                     {ele?.name}
                   </Typography>
                   <Typography variant="h6" sx={{ margin: "5px 0" }}>
                     {ele?.year}
-                  </Typography>
-                  <Typography variant="h6" sx={{ margin: "5px 0" }}>
-                    أ / {teacher?.name}{" "}
                   </Typography>
 
                   <Stack
@@ -266,8 +231,7 @@ const Pdfs = () => {
                           "linear-gradient(to right, #FF1105, #FCBB43)",
                         fontWeight: 700,
                       }}
-                      onClick={() => navigate('/preview/'+ele?._id)}
-                      // onClick={() => setModal({ open: true, update: false })}
+                      onClick={() => setModal({ open: true, update: false })}
                     >
                       معاينة
                     </Button>
@@ -290,7 +254,6 @@ const Pdfs = () => {
                   <CopyNumber
                     open={copyModal.open}
                     handleCloseCopy={handleCloseCopy}
-                    teacher={id}
                     pdf={ele?._id}
                   />
                   {/* </Grid>  */}
@@ -314,7 +277,7 @@ const Pdfs = () => {
         handleCloseUpdate={handleCloseUpdate}
       />
     </>
-  );
-};
+  )
+}
 
-export default Pdfs;
+export default Allpdfs

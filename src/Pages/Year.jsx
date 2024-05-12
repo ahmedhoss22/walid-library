@@ -14,6 +14,7 @@ const Year = () => {
   const dispatch = useDispatch()
   const pdfs = useSelector((state) => state.pdf.data);
   const [years, setYears] = useState([])
+  console.log(years);
 
   useEffect(() => {
     dispatch(getTeacherPdf(id))

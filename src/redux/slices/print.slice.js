@@ -5,27 +5,14 @@ export const getPrints = createAsyncThunk(
   "teacher/getTeacherPrint",
   async (_, thunkAPI) => {
     try {
-      const response = await Api.get("/print");
+      const response = await Api.get("/prints"); 
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
-
-export const getTeacherPrint = createAsyncThunk(
-  "teacher/getTeacherPrint",
-  async (id, thunkAPI) => {
-    console.log(id);
-    if (!id) return
-    try {
-      const response = await Api.get("/print/" + id);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
+ 
 
 const initialState = {
   data: [],
@@ -36,7 +23,7 @@ export const printSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getTeacherPrint.fulfilled, (state, action) => {
+    builder.addCase(getPrints.fulfilled, (state, action) => {
       state.data = action.payload;
     });
   },

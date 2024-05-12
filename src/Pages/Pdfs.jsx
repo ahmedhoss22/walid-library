@@ -19,7 +19,7 @@ const Pdfs = () => {
 
   const teachers = useSelector((state) => state.teacher.data);
   const pdfs = useSelector((state) => state.pdf.data);
-  
+
 
   const { id, year } = useParams();
   console.log(year);
@@ -51,16 +51,24 @@ const Pdfs = () => {
   }
   filterdData = filterdData?.filter((ele) => ele.year == year)
 
+
+
+
+
+
+
   return (
     <>
       <Container sx={{ marginTop: "1.5rem" }}>
         <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
           <Stack sx={{ marginTop: "1.5rem", justifyContent: "center", alignItems: "center", gap: "1.5rem" }} direction={"row-reverse"}>
-            <img className='d-block m-auto' src={apiUrl + teacher?.image} onClick={()=>navigate('/teacher-content/'+teacher?._id)} style={{ borderRadius: "50%",cursor:"pointer"}} width="80px" height="80px" />
-            <h3 style={{ color: "#fff", color: "white",
-    textShadow: "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43" }}>{teacher?.name}</h3>
+            <img className='d-block m-auto' src={apiUrl + teacher?.image} onClick={() => navigate('/teacher-content/' + teacher?._id)} style={{ borderRadius: "50%", cursor: "pointer" }} width="80px" height="80px" />
+            <h3 style={{
+              color: "#fff", color: "white",
+              textShadow: "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43"
+            }}>{teacher?.name}</h3>
           </Stack>
-          <img src={logo} style={{cursor:"pointer"}} onClick={()=>navigate('/')} placeholder='Logo' width="180px" height="90px" />
+          <img src={logo} style={{ cursor: "pointer" }} onClick={() => navigate('/')} placeholder='Logo' width="180px" height="90px" />
         </Stack>
         <Stack direction="row" gap={2} sx={{ justifyContent: "center", alignItems: "center" }}>
           <SearchInput value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -84,7 +92,7 @@ const Pdfs = () => {
                 <Typography variant='h6' sx={{ margin: "5px 0" }}>أ /  {teacher?.name} </Typography>
                 <Stack direction="row" justifyContent="space-between" sx={{ width: "100%", padding: " 0 1rem " }}>
                   <Button variant='contained' type='submit' sx={{ background: 'linear-gradient(to right, #FF1105, #FCBB43)', fontWeight: 700 }}>طباعة</Button>
-                  <Button variant='contained' type='submit' sx={{ background: 'linear-gradient(to right, #FF1105, #FCBB43)', fontWeight: 700 }}>معاينة</Button>
+                  // <Button variant='contained' type='submit' sx={{ background: 'linear-gradient(to right, #FF1105, #FCBB43)', fontWeight: 700 }}>معاينة</Button>
                 </Stack>
 
                 <div style={{ width: "100%", display: "flex", justifyContent: "end", padding: "0 30px 10px" }}>

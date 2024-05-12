@@ -2,10 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "../../config/api";
 
 export const getPdfs = createAsyncThunk(
-  "teacher/getTeacherPdf",
+  "teacher/getPdfs",
   async (_, thunkAPI) => {
     try {
       const response = await Api.get("/pdf");
+   
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -29,6 +30,7 @@ export const getTeacherPdf = createAsyncThunk(
 
 const initialState = {
   data: [],
+  all:[]
 };
 
 export const pdfSlice = createSlice({
@@ -38,6 +40,9 @@ export const pdfSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getTeacherPdf.fulfilled, (state, action) => {
       state.data = action.payload;
+    });
+    builder.addCase(getPdfs.fulfilled, (state, action) => {
+      state.all = action.payload;
     });
   },
 });

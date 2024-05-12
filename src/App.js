@@ -12,6 +12,8 @@ import { store } from './redux/store';
 import TeacherContent from './Pages/TeacherContent';
 import Pdfs from './Pages/Pdfs';
 import Year from './Pages/Year';    
+import Allpdfs from './Pages/Allpdfs';
+import Payments from './Pages/Payments';
 export default function App() {
   return (
     <>
@@ -39,6 +41,8 @@ export default function App() {
               <Route path="/" element={<Home />} />
             
                <Route path="/teacher-content/:id" element={<TeacherContent />} />
+              <Route path="/all-pdfs" element={<Allpdfs />} />
+              <Route path="/payments" element={<Payments />} />
               <Route path="/pdfs/:id" element={<Year />} />
               <Route path="/balance/:id" element={<Balance />} />
               <Route path="/preview/:id" element={<Preview />} />

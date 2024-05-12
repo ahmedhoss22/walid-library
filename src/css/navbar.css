@@ -1,0 +1,18 @@
+.nav-link{
+  text-decoration: none !important;
+  color: #fff;
+  transition: .3s;
+}
+
+.nav-link:hover{
+  color: var(--secondary);
+}
+.active{
+  color: var(--secondary);
+}
+.btns{
+  background-color: unset;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}

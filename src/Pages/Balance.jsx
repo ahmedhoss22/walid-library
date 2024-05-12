@@ -29,18 +29,13 @@ import { getTeacherData } from "../redux/slices/teacher.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { getTeacherPdf } from "../redux/slices/pdf.slice";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { format } from 'date-fns';
-import { IconButton } from '@mui/material';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace"; 
+import { format } from "date-fns";
+import { IconButton } from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { useReactToPrint } from "react-to-print";
+import { getPrints } from "../redux/slices/print.slice";
 
 const style = {
   display: "flex",
@@ -48,7 +43,7 @@ const style = {
   justifyContent: "center",
   alignItems: "center",
   maxWidth: 600,
-  margin: "auto",  
+  margin: "auto",
   bgcolor: "#1D2D3C",
   color: "#fff",
   border: "2px solid #FCBB43",
@@ -57,34 +52,45 @@ const style = {
   p: 4,
 };
 
-const Balance = () => {
-
-  // const [typeRadioBtn, setTypeRadioBtn] = useState("أجل")
+const Balance = () => { 
+ 
+  const viewerRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id, year } = useParams();
-  const [teacher, setTeacher] = useState(); 
+  const [teacher, setTeacher] = useState();
   const teachers = useSelector((state) => state.teacher.data);
-  const teacherpdf = useSelector((state) => state.pdf.data);
-  const [teacherPdf, setTeacherPdf] = useState();
- 
+  const teacherPrintedpdf = useSelector((state) => state.print.data);
   const [isOpenTable1, setIsOpenTable1] = useState(false);
+  const [teacherPrintedPdf, setTeacherPrintedPdf] = useState([]);
+
+ 
+
+  const handlePrint = useReactToPrint({
+    content: () => viewerRef.current,
+  });
+ 
+
   useEffect(() => {
-    let pdf = teacherpdf.find((ele) => ele._id == id);
-     
-      setTeacherPdf(teacherpdf);
-   }, [id]); 
+    dispatch(getPrints())
+  }, [id]);
+  
+  useEffect(() => {
+    let printedpdf = teacherPrintedpdf.find((ele) => ele?.teacher == id);
+    setTeacherPrintedPdf(printedpdf);
+  }, [teacherPrintedPdf]);
+  
+  console.log(teacherPrintedPdf);
+
+  // useEffect(() => {
+  //   let pdf = teacherpdf.find((ele) => ele._id == id);
+  //   setTeacherPdf(teacherpdf);
+  // }, [id]);
 
   const toggleTable1 = () => {
     setIsOpenTable1(!isOpenTable1);
   };
-
-  const [isOpenTable2, setIsOpenTable2] = useState(false);
-
-  const toggleTable2 = () => {
-    setIsOpenTable2(!isOpenTable2);
-  };
-
+  
 
   const formik = useFormik({
     initialValues: {
@@ -94,16 +100,15 @@ const Balance = () => {
   });
 
   function handleSubmit(values) {
-    const payment = values.payment;  
-    console.log(values);
+    const payment = values.payment; 
     Api.post("/teacher/payment", { teacher: id, payment })
       .then(() => {
-        notifySuccess("تم تعديل الحساب ");
+        notifySuccess("تم سداد المبلغ  ");
         formik.resetForm();
       })
       .catch((error) => {
         handleApiError(error);
-      }) 
+      });
   }
 
   useEffect(() => {
@@ -111,7 +116,6 @@ const Balance = () => {
     let user = teachers.find((ele) => ele._id == id);
     setTeacher(user);
   }, []);
-  
 
   return (
     <Container sx={{ marginTop: "1.5rem" }}>
@@ -196,8 +200,9 @@ const Balance = () => {
                 "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43",
             }}
           >
-            {" "}
-            الحساب الكلي : {teacher?.balance}
+            {teacher?.type == "loan"
+              ? `المطلوب سداده : ${teacher?.balance} `
+              : ` الحساب الكلي : ${teacher?.balance} `}
           </h1>
           {/* <Grid item xs={12}>
                   <InputField  fullWidth required type='text' name="name" variant='outlined' label="الحساب الكلي"   />
@@ -223,73 +228,124 @@ const Balance = () => {
                 sx={{
                   background: "linear-gradient(to right, #FF1105, #FCBB43)",
                   fontWeight: 700,
+                  marginLeft: "6px",
                 }}
               >
-                تعديل الحساب
+                سداد مبلغ{" "}
               </Button>
             </Grid>
           </form>
         </Stack>
       </Box>
 
-      <div style={{    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'}}>     <IconButton onClick={toggleTable1}>
-        {isOpenTable1 ? <KeyboardArrowUpIcon  sx={{ color:'#FCBB43' }} /> : <KeyboardArrowDownIcon   sx={{ color:'#FCBB43' }}/>}
-      </IconButton> 
-       <h3
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {" "}
+        <IconButton onClick={toggleTable1}>
+          {isOpenTable1 ? (
+            <KeyboardArrowUpIcon sx={{ color: "#FCBB43" }} />
+          ) : (
+            <KeyboardArrowDownIcon sx={{ color: "#FCBB43" }} />
+          )}
+        </IconButton>
+        <h3
+          style={{
+            color: "#fff",
+            color: "white",
+            textAlign: "center",
+            margin: "25px 0px",
+            textShadow:
+              "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43",
+          }}
+        >
+          العمليات
+        </h3>
+      </div>
+
+      <Button
+        variant="contained"
+        onClick={handlePrint}
+        type="button"
+        sx={{
+          background: "linear-gradient(to right, #FF1105, #FCBB43)",
+          fontWeight: 700,
+          marginBottom: "20px",
+          marginLeft: "12px",
+        }}
+      >
+        طباعة الجدول
+      </Button>
+
+      {isOpenTable1 && (
+        <div ref={viewerRef}>
+          <table
             style={{
-              color: "#fff",
-              color: "white",
-              textAlign:"center",
-              margin:"25px 0px",
-              textShadow:
-                "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43",
+              background: "#1D2D3C",
+              margin: "10px",
+              border: "2px solid #FCBB43",
+              width: "100%",
             }}
           >
-            العمليات 
-          </h3>
-           
-      </div>
-  
+            <thead>
+              <tr>
+                <th style={{ color: "white", textAlign: "center" }}>
+                  التفاصيل
+                </th>{" "}
+                <th style={{ color: "white", textAlign: "center" }}>
+                  تاريخ العملية
+                </th>{" "}
+                <th style={{ color: "white", textAlign: "center" }}>المبلغ</th>{" "}
+                <th style={{ color: "white", textAlign: "center" }}>
+                  نوع العملية
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {teacher?.transactions?.map((row) => (
+                <tr key={row.name}>
+                  <td style={{ color: "white", textAlign: "center" }}>
+                    -
+                  </td>{" "}
+                  <td style={{ color: "white", textAlign: "center" }}>
+                    {format(new Date(row?.createdAt), "dd/MM/yyyy")}
+                  </td>{" "}
+                  <td style={{ color: "white", textAlign: "center" }}>
+                    {row?.amount}  : تم سداد 
+                  </td>
+                  <td style={{ color: "white", textAlign: "center" }}>
+                   دفع
+                  </td>
+                </tr>
+              ))}
 
-
-        
-
-      {isOpenTable1 && (    <TableContainer component={Paper} dir="rtl" style={{   
-    
-          background: "#1D2D3C",
-      margin:"10px",   
-  border: "2px solid #FCBB43",}}>
-      <Table  sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow> 
-            <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>   الحساب قبل الدفع </TableCell>
-            <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>       الحساب بعد الدفع </TableCell>
-            <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>   المبلغ</TableCell>
-            <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>             تاريخ الدفع </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {teacher?.transactions?.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >  
-            
-              <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>{row?.beforeBalance}</TableCell>
-              <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>{row?.afterBalance}</TableCell>
-              <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}>{row?.amount}</TableCell>
-              <TableCell align="center" style={{ color: 'white' ,    fontSize:'20px' }}> {format(new Date(row?.createdAt), '    dd/MM/yyyy')}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer> 
+{/* {teacherPdf.map((row) => (
+                <tr key={row.name}>
+                  <td style={{ color: "white", textAlign: "center" }}>
+                  {row?.name}  : اسم المذكرة 
+                  </td>{" "}
+                  <td style={{ color: "white", textAlign: "center" }}>
+                    {format(new Date(row?.createdAt), "dd/MM/yyyy")}
+                  </td>{" "}
+                  <td style={{ color: "white", textAlign: "center" }}>
+                    {row?.oneCopyCost}  : سعر النسخة 
+                  </td>
+                  <td style={{ color: "white", textAlign: "center" }}>
+                   طباعة
+                  </td>
+                </tr>
+              ))} */}
+              
+            </tbody>
+          </table>
+        </div>
       )}
-   
 
-    <div style={{    display: 'flex',
+      {/* <div style={{    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'}}>     <IconButton onClick={toggleTable2}>
         {isOpenTable2 ? <KeyboardArrowUpIcon  sx={{ color:'#FCBB43' }}/> : <KeyboardArrowDownIcon  sx={{ color:'#FCBB43' }} />}
@@ -336,9 +392,7 @@ const Balance = () => {
         </TableBody>
       </Table>
     </TableContainer> 
-      )}
-  
-
+      )} */}
     </Container>
   );
 };

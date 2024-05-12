@@ -3,11 +3,11 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { Grid } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import InputField from "./InputField";
 import { useFormik } from "formik";
 import Api, { handleApiError } from "../config/api";
-import { notifySuccess } from "../utilities/toastify";
+import { notifyError, notifySuccess } from "../utilities/toastify";
 
 const style = {
   position: "absolute",
@@ -24,24 +24,28 @@ const style = {
 };
 const CopyNumber = ({ open, handleCloseCopy, teacher, pdf }) => {
 
-  
+
   const formik = useFormik({
     initialValues: {
-      copies: 1,
+      copies: 0,
     },
     onSubmit: handleSubmit
   });
 
   function handleSubmit(values) {
-    
-    const { copies, ...data } = values; // Extract copies and exclude it from data
-    console.log({ teacher, pdf, copies }); 
+
+    const { copies, ...data } = values;
+    if(copies <1){
+      return notifyError("يجب ادخال عدد النسخ قبل التأكيد")
+    }
+    console.log({ teacher, pdf, copies });
     delete data.values;
     delete data.copies;
 
     // const { copies } = values;  
     // console.log({ teacher, pdf, copies});
-    Api.post("/prints", { teacher, pdf, copies})
+    Api.post("/prints", { teacher, pdf, copies })
+
       .then(() => {
         notifySuccess("تم اضافة عدد النسخ");
         formik.resetForm();
@@ -71,34 +75,22 @@ const CopyNumber = ({ open, handleCloseCopy, teacher, pdf }) => {
             }}
           >
             {" "}
-            عدد النسخ
+            قم بادخال عدد النسخ التي طبعت
           </h2>
           <form onSubmit={formik.handleSubmit} style={{ marginTop: "1rem" }}>
             {" "}
             <Grid item xs={12}>
-              <InputField
-                fullWidth
-                required
-                type="number"
-                name="copies"
-                value={formik.values?.copies}
-                onChange={formik.handleChange}
-                variant="outlined"
-                label="عدد النسخ"
-              />
+              <InputField fullWidth required type="number" name="copies" value={formik.values?.copies} onChange={formik.handleChange} variant="outlined"  label="عدد النسخ"/>
             </Grid>
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                variant="contained"
-                type="submit"
-                sx={{
-                  background: "linear-gradient(to right, #FF1105, #FCBB43)",
-                  fontWeight: 700,
-                }}
-              >
-                تسليم
-              </Button>
+            <Grid item xs={12} sx={{marginTop:"1rem"}}>
+              <Stack direction={"row"} gap={4}>
+                <Button onClick={()=>handleCloseCopy()} fullWidth variant="contained" type="button" color="error">
+                  الغاء
+                </Button>
+                <Button  fullWidth variant="contained" type="submit" color="success" sx={{fontWeight: 700,color:"#fff" }}>
+                  تأكيد
+                </Button>
+              </Stack>
             </Grid>
           </form>
         </Box>
