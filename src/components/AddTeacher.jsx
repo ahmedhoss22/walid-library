@@ -58,6 +58,9 @@ const AddTeacher = () => {
   }
 
   function handleSubmit(values) {
+    if (values.type == "loan") {
+      values.balance = -values.balance
+    }
     if (image) {
       values.image = image
     }
@@ -102,7 +105,7 @@ const AddTeacher = () => {
                 <InputField required type='text' name="name" variant='outlined' label="الأسم" value={formik.values.name} onChange={formik.handleChange} />
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">نوع الحساب</InputLabel>
-                  <Select labelId="demo-simple-select-label" id="demo-simple-select" value={formik.values.type}  label="نوع الحساب"  name='type'  onChange={formik.handleChange}  className="custom-select">
+                  <Select labelId="demo-simple-select-label" id="demo-simple-select" value={formik.values.type} label="نوع الحساب" name='type' onChange={formik.handleChange} className="custom-select">
                     <MenuItem value={"loan"}>أجل</MenuItem>
                     <MenuItem value={"deposite"}>مقدم</MenuItem>
                   </Select>

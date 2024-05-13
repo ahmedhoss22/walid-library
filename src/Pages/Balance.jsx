@@ -61,7 +61,7 @@ const Balance = () => {
   const [teacher, setTeacher] = useState();
   const teachers = useSelector((state) => state.teacher.data);
 
-  const teacherPrintedpdf = useSelector((state) => state.print.data);
+  const teacherPrintedpdfs = useSelector((state) => state.print.data);
   const [isOpenTable1, setIsOpenTable1] = useState(false);
   const [teacherPrintedPdf, setTeacherPrintedPdf] = useState([]);
   const [table, setTable] = useState([])
@@ -73,11 +73,41 @@ const Balance = () => {
 
 
   useEffect(() => {
-    dispatch(getPrints())
+    // Fetch prints and teacher data
+    dispatch(getPrints());
     dispatch(getTeacherData(id));
-    let printedpdf = teacherPrintedpdf.filter((ele) => ele?.teacher == id);
-    setTeacherPrintedPdf(printedpdf);
   }, [id]);
+
+  useEffect(() => {
+    // Filter printed PDFs based on teacher ID
+    let printedpdf = teacherPrintedpdfs.filter((ele) => ele?.teacher === id);
+    setTeacherPrintedPdf(printedpdf);
+  }, [teacherPrintedpdfs, id]); // Added teacherPrintedpdfs as a dependency
+
+  useEffect(() => {
+    // Process transactions and printed PDFs
+    let user = teachers.find((ele) => ele._id === id);
+
+    if (user) {
+      let temp = user.transactions.map((ele) => ({
+        ...ele,
+        type: "دفع" // Assuming this is correct
+      }));
+
+      let tempPrints = teacherPrintedPdf.map((ele) => ({
+        ...ele,
+        type: "طباعة", // Assuming this is correct
+        amount: ele.cost || 0 // Assuming cost exists
+      }));
+
+      let all = [...tempPrints, ...temp];
+      all.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+      setTable(all);
+      setTeacher(user);
+    }
+  }, [teachers, teacherPrintedPdf]);
+
 
   const toggleTable1 = () => {
     setIsOpenTable1(!isOpenTable1);
@@ -104,22 +134,7 @@ const Balance = () => {
       });
   }
 
-  useEffect(() => {
-    let user = teachers.find((ele) => ele._id == id);
-    let temp = user?.transactions.map((ele) => {
-      return { ...ele, type: "دفع" }
-    })
-    let tempPrints = teacherPrintedPdf.map((ele) => {
-      return { ...ele, type: "طباعة", amount: ele.cost || 0 }
-    })
-    let all = [...tempPrints, ...temp]
-    all.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
-
-    setTable(all)
-    setTeacher(user);
-
-  }, [teachers]);
 
   console.log(teacherPrintedPdf);
 
@@ -189,8 +204,8 @@ const Balance = () => {
                 "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43",
             }}
           >
-            {teacher?.type == "loan"
-              ? `المطلوب سداده : ${teacher?.balance} `
+            {teacher?.balance < 0
+              ? `المطلوب سداده : ${-teacher?.balance} `
               : ` الحساب الكلي : ${teacher?.balance} `}
           </h1>
           {/* <Grid item xs={12}>
@@ -304,7 +319,7 @@ const Balance = () => {
                     {format(new Date(row?.createdAt), "dd-MM-yyyy")}
                   </td>{" "}
                   <td style={{ color: "#000", textAlign: "center" }}>
-                    {row?.amount} 
+                    {row?.amount}
                   </td>
                   <td style={{ color: "#000", textAlign: "center" }}>
                     {row?.type}
