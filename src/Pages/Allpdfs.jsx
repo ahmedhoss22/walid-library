@@ -267,6 +267,7 @@ const Allpdfs = () => {
       </Container>
 
       <ConfirmationDialoge
+      type={'pdf'}
         open={dialog.open}
         handleClose={handleCloseDialoge}
         id={dialog.id}

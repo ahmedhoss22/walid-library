@@ -105,7 +105,8 @@ const Pdfs = () => {
         <AddPdf />
       </Container>
 
-      <ConfirmationDialoge open={dialog.open} handleClose={handleCloseDialoge} id={dialog.id} />
+      <ConfirmationDialoge       type={'pdf'}
+ open={dialog.open} handleClose={handleCloseDialoge} id={dialog.id} />
       <AddPdf update={update.open} data={update.data} handleCloseUpdate={handleCloseUpdate} />
     </>
   )

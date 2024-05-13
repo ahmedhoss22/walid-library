@@ -34,8 +34,7 @@ const style = {
   height: 600,
   overflowY: "auto",
 };
-const AddPayment = ({ open, handleClose }) => {
-  const [typeRadioBtn, setTypeRadioBtn] = useState("حلزوني")
+const AddPayment = ({ open, handleClose }) => { 
   const dispatch = useDispatch()
   const teachers = useSelector((state) => state.teacher.data)
   const pdf = useSelector((state) => state.pdf.all)
@@ -50,22 +49,21 @@ const AddPayment = ({ open, handleClose }) => {
   const formik = useFormik({
     initialValues: {
       teacher: "",
-      copies: "",
       pdf: "",
       type: "client",
-      name: "",
+      copies: "",
       pagesNo: "",
       paperCost: "",
       coverCost: "",
-      year: "",
-      paperPrint: "",
+      // paperPrint: "",
+      // name: "",
+      // year: "",
     },
     onSubmit:handleSubmit,
   })
 
   React.useEffect(() => {
-    if (formik.values.teacher) {
-      console.log();
+    if (formik.values.teacher) { 
       const temp = pdf.filter((ele) => ele?.teacher?._id == formik.values.teacher)
       setDisplayedPdf(temp)
     }
@@ -73,7 +71,12 @@ const AddPayment = ({ open, handleClose }) => {
 
 
   function handleSubmit(values) {
-    const url = values.type == "customer" ? "/prints/customer" :"/prints" 
+    const url = values.type == "client" ? "/prints/customer" :"/prints" 
+    if (values.type === "client") {
+      delete values.pdf;
+      delete values.teacher;
+    }
+    console.log(values)
     Api.post(url, values)
       .then(() => {
         notifySuccess("تم الاضافة")
@@ -106,7 +109,7 @@ const AddPayment = ({ open, handleClose }) => {
           <Grid spacing={2} container sx={{ direction: "rtl" }}>
             {formik.values.type == "client" && <>
               <Grid item xs={12}>
-                <InputField fullWidth required type='text' name="name" variant='outlined' label="سعر الورقة" value={formik.values?.name} onChange={formik.handleChange} />
+                <InputField fullWidth required type='number' name="paperCost" variant='outlined' label="سعر الورقة" value={formik.values?.paperCost} onChange={formik.handleChange} />
               </Grid>
               <Grid item xs={12}>
                 <InputField required fullWidth type='number' name="pagesNo" variant='outlined' label="عدد الورق" value={formik.values?.pagesNo} onChange={formik.handleChange} />
