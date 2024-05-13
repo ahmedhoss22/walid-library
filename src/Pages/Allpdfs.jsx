@@ -171,8 +171,7 @@ const Allpdfs = () => {
                 <Card sx={{ margin: " 10px 20px", display: "flex", alignItems: "center", flexDirection: "column", color: "#fff", maxWidth: 345, backgroundColor: "unset", boxShadow: " 0 0 10px 1px rgba(255,255,255,0.5)", }}>
                   <Stack
                     direction={"row"}
-                    sx={{
-                      padding: "5px 5px 0",
+                    sx={{ 
                       justifyContent: "space-between",
                       width: "100% !important",
                       flexGrow: "1",

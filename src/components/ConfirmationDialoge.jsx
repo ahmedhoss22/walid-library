@@ -30,11 +30,13 @@ export default function ConfirmationDialoge({ type,id, open, handleClose }) {
     
     Api.delete(url + id)
       .then(() => {
-        notifySuccess("تم حذف المذكرة")
         if (type === 'pdf') {
+          notifySuccess("تم حذف المذكرة")
           dispatch(getTeacherPdf())
         } else {
           dispatch(getPrints())
+          notifySuccess("تم حذف الطباعة")
+
         }
       })
       .catch((error) => { handleApiError(error) })
