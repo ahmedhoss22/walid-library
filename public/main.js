@@ -21,7 +21,9 @@ async function createWindow() {
       nodeIntegration: true,
       enableRemoteModule: true,
       contextIsolation: true,
-    }
+    },
+    autoHideMenuBar:true,
+    
   });
 
   // Ensure isDev is loaded before proceeding
