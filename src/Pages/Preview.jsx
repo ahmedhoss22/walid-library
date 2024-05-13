@@ -1,10 +1,10 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button"; 
+import Button from "@mui/material/Button";
 import { Worker, Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
-import  { apiUrl } from "../config/api";
-import { useRef } from "react"; 
+import { apiUrl } from "../config/api";
+import { useRef } from "react";
 import { PDFDocument, rgb } from "pdf-lib";
 import { useNavigate, useParams } from "react-router-dom";
 import { getPdfs, getTeacherPdf } from "../redux/slices/pdf.slice";
@@ -22,8 +22,9 @@ import {
   TableRow,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
+import CopyNumber from "../components/CopyNumber";
 
-const style = { 
+const style = {
   width: 600,
   bgcolor: "#1D2D3C",
   color: "#fff",
@@ -40,7 +41,7 @@ export default function Preview() {
   const pdfs = useSelector((state) => state?.pdf?.data);
   const viewerRef = useRef(null);
   const [pdf, setPdf] = useState();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   console.log("id: " + id);
   console.log("pdfs", pdfs);
@@ -68,9 +69,7 @@ export default function Preview() {
   const handlePrintPDF = async (pdfUrl) => {
     try {
       const adjustedPdfBytes = await adjustPDFContent(pdfUrl);
-      const adjustedPdfBlob = new Blob([adjustedPdfBytes], {
-        type: "application/pdf",
-      });
+      const adjustedPdfBlob = new Blob([adjustedPdfBytes], { type: 'application/pdf' });
       const adjustedPdfUrl = URL.createObjectURL(adjustedPdfBlob);
 
       const printWindow = window.open(adjustedPdfUrl);
@@ -78,17 +77,19 @@ export default function Preview() {
       if (printWindow) {
         printWindow.onload = () => {
           printWindow.print();
-          window.addEventListener("afterprint", () => {
-            printWindow.close();
-          });
+          setTimeout(()=>{
+            setCopyModal({open:true})
+          },1000)
+
         };
       } else {
-        console.error("Failed to open print window");
+        console.error('Failed to open print window');
       }
     } catch (error) {
-      console.error("Error printing PDF:", error);
+      console.error('Error printing PDF:', error);
     }
   };
+
   useEffect(() => {
     dispatch(getPdfs(id));
     let pdf = pdfs.find((ele) => ele?._id == id);
@@ -96,6 +97,13 @@ export default function Preview() {
   }, [id]);
   console.log(pdf);
 
+  const [copyModal, setCopyModal] = useState({
+    open: false,
+    update: false,
+    data: null,
+  });
+  const handleCloseCopy = () =>
+    setCopyModal({ open: false, update: false, data: null });
   return (
     <Container sx={{ marginTop: "1.5rem" }}>
       <div>
@@ -280,8 +288,14 @@ export default function Preview() {
               طباعة
             </Button>
           </Stack>
+          <CopyNumber
+            open={copyModal.open}
+            handleCloseCopy={handleCloseCopy}
+            teacher={pdf?.teacher}
+            pdf={pdf?._id}
+          />
         </div>
-      </div>{" "}
+      </div> 
     </Container>
   );
 }

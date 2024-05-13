@@ -124,7 +124,7 @@ const Pdfs = () => {
           printWindow.print();
           setTimeout(()=>{
             setCopyModal({open:true})
-          },3000)
+          },1000)
 
         };
       } else {
