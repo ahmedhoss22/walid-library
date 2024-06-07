@@ -1,0 +1,31 @@
+.nav-link{
+  text-decoration: none !important;
+  color: #fff;
+  transition: .3s;
+}
+
+.nav-link:hover{
+  color: var(--secondary);
+}
+.active{
+  color: var(--secondary);
+}
+.btns{
+  background-color: unset;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  color:"#fff";
+}
+
+/* Add a custom icon */
+input[type="date"] {
+  /* background-image: url('path_to_your_custom_icon.svg'); */
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: contain;
+  padding-right: 20px; /* Adjust according to the size of your icon */
+}
