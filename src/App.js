@@ -17,8 +17,8 @@ import Login from './Pages/Login';
 
 
 export default function App() {
-  const logedin= useSelector((state)=>state.user.logedin)
-  
+  const logedin = useSelector((state) => state.user.logedin)
+
   return (
     <>
       <Toaster
@@ -39,22 +39,22 @@ export default function App() {
         }}
       />
 
-          <ThemeProvider theme={theme}>
-            <Router>
-              <Routes>
-                <Route path="/" element={logedin ?  <Home /> : <Login/>} />
-                <Route path="/login" element={<Login/>} />
+      <ThemeProvider theme={theme}>
+        <Router>
+          <Routes>
+            <Route path="/" element={logedin ? <Home /> : <Login />} />
+            <Route path="/login" element={<Login />} />
 
-                <Route path="/teacher-content/:id" element={logedin ?  <TeacherContent /> : <Login/>} />
-                <Route path="/all-pdfs" element={logedin ?  <Allpdfs /> : <Login/>} />
-                <Route path="/payments" element={logedin ?  <Payments /> : <Login/>} />
-                <Route path="/pdfs/:id" element={logedin ?  <Year /> : <Login/>} />
-                <Route path="/balance/:id" element={logedin ?  <Balance /> : <Login/>} />
-                <Route path="/preview/:id" element={logedin ?  <Preview /> : <Login/>} />
-                <Route path="/pdfs/:id/:year" element={logedin ?  <Pdfs /> : <Login/>} />
-              </Routes>
-            </Router>
-          </ThemeProvider>
+            <Route path="/teacher-content/:id" element={logedin ? <TeacherContent /> : <Login />} />
+            <Route path="/all-pdfs" element={logedin ? <Allpdfs /> : <Login />} />
+            <Route path="/payments" element={logedin ? <Payments /> : <Login />} />
+            {/* <Route path="/pdfs/:id" element={logedin ?  <Year /> : <Login/>} /> */}
+            <Route path="/balance/:id" element={logedin ? <Balance /> : <Login />} />
+            <Route path="/preview/:id" element={logedin ? <Preview /> : <Login />} />
+            <Route path="/pdfs/:id" element={logedin ? <Pdfs /> : <Login />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </>
   );
 }

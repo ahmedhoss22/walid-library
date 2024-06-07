@@ -17,7 +17,6 @@ export const getPdfs = createAsyncThunk(
 export const getTeacherPdf = createAsyncThunk(
   "teacher/getTeacherPdf",
   async (id, thunkAPI) => {
-    console.log(id);
     if (!id) return
     try {
       const response = await Api.get("/pdf/" + id);

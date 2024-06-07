@@ -11,6 +11,7 @@ import { notifySuccess } from '../utilities/toastify';
 import { useDispatch } from 'react-redux';
 import { getPdfs, getTeacherPdf } from '../redux/slices/pdf.slice';
 import { getPrints } from '../redux/slices/print.slice';
+import { useParams } from 'react-router-dom';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -18,7 +19,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function ConfirmationDialoge({ type,id, open, handleClose }) {
  
-
+  const {id : teacherId} = useParams()
   const dispatch = useDispatch()
   function handleDelete() {
     let url;
@@ -32,7 +33,7 @@ export default function ConfirmationDialoge({ type,id, open, handleClose }) {
       .then(() => {
         if (type === 'pdf') {
           notifySuccess("تم حذف المذكرة")
-          dispatch(getTeacherPdf())
+          dispatch(getTeacherPdf(teacherId))
           dispatch(getPdfs());
         } else {
           dispatch(getPrints())

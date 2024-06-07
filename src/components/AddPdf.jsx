@@ -156,8 +156,6 @@ const AddPdf = ({ update, data, handleCloseUpdate, teacher }) => {
     }
   }, [data])
 
-  console.log(formik.values);
-
   return (
     <>
       <div style={{
