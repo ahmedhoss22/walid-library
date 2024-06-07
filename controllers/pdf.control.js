@@ -13,9 +13,9 @@ const PdfsCtl = {
     await newPdfs.save()
     res.send()
   }),
+  
   getAllPdfs: asyncHandler(async (req, res) => {
-    let data = await Pdfs.find().populate({ path: "teacher" ,select:"_id"});
-     
+    let data = await Pdfs.find().populate({ path: "teacher"});   
     res.send(data)
   }),
   updatePdfs: asyncHandler(async (req, res) => {
@@ -25,8 +25,6 @@ const PdfsCtl = {
       pdf.src = `/images/pdf/` + req.file.filename
       await pdf.save()
     }
-
-
     res.send(pdf)
   }),
   deletePdfs: asyncHandler(async (req, res) => {

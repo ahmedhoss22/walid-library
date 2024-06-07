@@ -26,12 +26,12 @@ app.use(cookieParser())
 
 app.use(
     cors({
-      origin: "*",
+      origin: "http://localhost:3000",
       credentials: true,
     })
   );
   
-  app.options("*", cors());
+  app.options("http://localhost:3000", cors());
    
   app.use("/api/images" , express.static("./uploads"))
   app.use("/api",routes)
