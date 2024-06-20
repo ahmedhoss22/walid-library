@@ -20,7 +20,7 @@ const cors = require("cors");
     })
 }
  
-app.use(morgan("dev"))
+// app.use(morgan("dev"))
 app.use(express.json())
 app.use(cookieParser())
 
@@ -33,8 +33,41 @@ app.use(
   
   app.options("http://localhost:3000", cors());
    
+
+
+
+  app.get('/pdf', async (req, res) => {
+    try {
+      const { pdfUrl } = req.query;
+      const response = await axios.get(pdfUrl, { responseType: 'arraybuffer' });
+      res.set('Content-Type', 'application/pdf');
+      res.send(response.data);
+    } catch (error) {
+      console.error('Error fetching PDF:', error);
+      res.status(500).send('Error fetching PDF');
+    }
+  });
+
+
+
+
+
+
+
   app.use("/api/images" , express.static("./uploads"))
   app.use("/api",routes)
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.all("*",(req,res)=>{
     res.status(404).send({message:"Invalid Route"})
