@@ -36,6 +36,9 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useReactToPrint } from "react-to-print";
 import { getPrints } from "../redux/slices/print.slice";
+import * as XLSX from 'xlsx'
+import * as XLSXStyle from "xlsx-js-style";
+
 
 const style = {
   display: "flex",
@@ -113,7 +116,6 @@ const Balance = () => {
     setIsOpenTable1(!isOpenTable1);
   };
 
-
   const formik = useFormik({
     initialValues: {
       payment: 0,
@@ -134,9 +136,74 @@ const Balance = () => {
       });
   }
 
+  const handleCsvExport = () => {
+    const wb = XLSX.utils.book_new();
 
+    const printDate = table.map(row => ({
+      CreatedAt: format(new Date(row?.createdAt), "dd-MM-yyyy"),
+      Amount: row?.amount,
+      Type: row?.type
+    }));
 
-  console.log(teacherPrintedPdf);
+    const itemData = [
+      ["Amount", "Type", "Created At"], // Headers
+      ...printDate.map(item => [
+        item.Amount, item.Type, item.CreatedAt
+      ])
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet(itemData);
+
+    const headerStyle = {
+      fill: {
+        patternType: "solid",
+        fgColor: { rgb: "006400" }
+      },
+      font: {
+        bold: true,
+        color: { rgb: "FFFFFF" }
+      },
+      alignment: {
+        vertical: "center",
+        horizontal: "center"
+      }
+    };
+
+    const headerCells = ["A", "B", "C"];
+    headerCells.forEach((cell) => {
+      const headerRef = `${cell}1`;
+      if (ws[headerRef]) {
+        ws[headerRef].s = headerStyle;
+      }
+    });
+
+    const cellStyle = {
+      alignment: {
+        vertical: "center",
+        horizontal: "center"
+      }
+    };
+    for (let R = 0; R < itemData.length; ++R) {
+      for (let C = 0; C < itemData[0].length; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+        if (!ws[cellAddress]) ws[cellAddress] = {};
+        ws[cellAddress].s = { ...ws[cellAddress].s, ...cellStyle };
+      }
+    }
+
+    const colWidths = [
+      { wch: 20 },  // Created At
+      { wch: 10 },  // Amount
+      { wch: 20 }   // Type
+    ];
+    ws['!cols'] = colWidths;
+
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+    const currentDate = new Date();
+    XLSXStyle.writeFile(wb, `Current-stock-report-${format(currentDate, "dd-MM-yyyy")}.xlsx`);
+  };
+
 
   return (
     <Container sx={{ marginTop: "1.5rem" }}>
@@ -155,11 +222,11 @@ const Balance = () => {
             width="80px"
             onClick={() => navigate("/teacher-content/" + teacher?._id)}
             height="80px"
+            alt="img"
           />
           <h3
             style={{
               color: "#fff",
-              color: "white",
               textShadow:
                 "-1px -1px 0 #FCBB43, 1px -1px 0 #FCBB43, -1px 1px 0 #FCBB43, 1px 1px 0 #FCBB43",
             }}
@@ -178,6 +245,7 @@ const Balance = () => {
           height="90px"
           style={{ cursor: "pointer" }}
           onClick={() => navigate("/")}
+          alt="img"
         />
       </Stack>
       <Box sx={style}>
@@ -260,7 +328,6 @@ const Balance = () => {
         <h3
           style={{
             color: "#fff",
-            color: "white",
             textAlign: "center",
             margin: "25px 0px",
             textShadow:
@@ -273,7 +340,7 @@ const Balance = () => {
 
       <Button
         variant="contained"
-        onClick={handlePrint}
+        onClick={handleCsvExport}
         type="button"
         sx={{
           background: "linear-gradient(to right, #FF1105, #FCBB43)",

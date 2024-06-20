@@ -136,7 +136,7 @@ const Pdfs = () => {
     let uniqueYears = new Set()
     let uniqueGrades = new Set()
 
-    pdfs.forEach((ele) => {
+    pdfs?.forEach((ele) => {
       uniqueYears.add(ele?.year)
       uniqueGrades.add(ele?.grade)
     })

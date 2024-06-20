@@ -13,7 +13,7 @@ import { notifyError, notifySuccess } from '../utilities/toastify';
 import { getTeacherData } from '../redux/slices/teacher.slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { getTeacherPdf } from '../redux/slices/pdf.slice';
+import { getPdfs, getTeacherPdf } from '../redux/slices/pdf.slice';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 const style = {
@@ -113,7 +113,7 @@ const AddPdf = ({ update, data, handleCloseUpdate, teacher }) => {
         formik.resetForm()
         handleClose()
         dispatch(getTeacherPdf(id))
-
+        dispatch(getPdfs());
       })
       .catch((error) => {
         handleApiError(error)

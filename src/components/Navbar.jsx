@@ -4,12 +4,14 @@ import SearchInput from './SearchInput'
 import logo from "../images/logo.png"
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import "../css/navbar.css"
+import { IoIosLogOut } from "react-icons/io";
+import { useDispatch } from 'react-redux'
+import { logout } from '../redux/slices/user.slice'
 
 const Navbar = ({ children }) => {
   const [active, setActive] = useState(null);
   const [route, setRoute] = useState(null);
   const navigate = useNavigate();
-
   const location = useLocation();
 
   useEffect(() => {
@@ -40,32 +42,34 @@ const Navbar = ({ children }) => {
     setRoute(route);
   }
 
+  const dispatch = useDispatch()
+  function handleLogout(){
+    dispatch(logout())
+  }
+
   return (
     <Stack
       direction="row-reverse"
       justifyContent={"space-between"}
-      sx={{ border: "1px solid #fff", borderRadius: "1rem", padding: "0 32px", gap: { lg: "5rem", md: "4rem" } }}
-    >
+      sx={{ border: "1px solid #fff", borderRadius: "1rem", padding:{sm :"0 32px",xs:"0" , } , gap: { lg: "5rem", md: "4rem" } }}>
       <Stack direction={"row-reverse"} gap={2} alignItems={"center"}>
+        <IoIosLogOut style={{color:"#fff" , fontSize:"1.6rem", cursor:"pointer"}} onClick={handleLogout}/>
         <button
           className={`nav-link btns ${active === 1 ? "active" : ""}`}
           style={{ color: active === 1 ? "var(--secondary)" : "#fff" }}
-          onClick={() => handleNavigate("/", 1)}
-        >
+          onClick={() => handleNavigate("/", 1)}>
           المدرسين
         </button>
         <button
           className={`nav-link btns ${active === 2 ? "active" : ""}`}
           style={{ color: active === 2 ? "var(--secondary)" : "#fff" }}
-          onClick={() => handleNavigate("/payments", 2)}
-        >
+          onClick={() => handleNavigate("/payments", 2)}>
           الحسابات
         </button>
         <button
           className={`nav-link btns ${active === 3 ? "active" : ""}`}
           style={{ color: active === 3 ? "var(--secondary)" : "#fff" }}
-          onClick={() => handleNavigate("/all-pdfs", 3)}
-        >
+          onClick={() => handleNavigate("/all-pdfs", 3)}>
           المذكرات
         </button>
       </Stack>

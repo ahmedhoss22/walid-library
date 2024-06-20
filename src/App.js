@@ -7,18 +7,30 @@ import Preview from './Pages/Preview';
 import theme from "./utilities/Theme"
 import { ThemeProvider } from '@mui/material';
 import toast, { Toaster } from "react-hot-toast";
-import { Provider, useSelector } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import TeacherContent from './Pages/TeacherContent';
 import Pdfs from './Pages/Pdfs';
 import Year from './Pages/Year';
 import Allpdfs from './Pages/Allpdfs';
 import Payments from './Pages/Payments';
 import Login from './Pages/Login';
-
+import { useEffect } from 'react';
+import Api from './config/api';
+import { logout, login } from './redux/slices/user.slice';
 
 export default function App() {
   const logedin = useSelector((state) => state.user.logedin)
+  const dispatch = useDispatch()
 
+  console.log(logedin);
+  useEffect(() => {
+    async function checklogin() {
+      await Api.post("/auth/online", {})
+        .then(() => dispatch(login()))
+        // .catch(() => dispatch(logout()))
+    }
+    checklogin()
+  }, [])
   return (
     <>
       <Toaster

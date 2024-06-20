@@ -50,11 +50,13 @@ const Allpdfs = () => {
       (ele) => ele?.name?.includes(search) || ele?.year?.includes(search) || ele?.teacher?.name?.includes(search)
     );
   }
+  
   const [modal, setModal] = useState({
     open: false,
     update: false,
     data: null,
   });
+
   const handleClose = () =>
     setModal({ open: false, update: false, data: null });
 
@@ -68,7 +70,6 @@ const Allpdfs = () => {
 
 
   const adjustPDFContent = async (pdfUrl) => {
-    // Load the PDF from the URL
     try {
       const existingPdfBytes = await fetch(pdfUrl).then((res) => res.arrayBuffer());
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -76,10 +77,8 @@ const Allpdfs = () => {
       pages.forEach((page) => {
         const { width, height } = page.getSize();
         page.setSize(width, height); // Adjust width
-        // page.setRotation(0); // Remove or comment out this line
       });
 
-      // Serialize the modified PDF
       return pdfDoc.save();
     } catch (error) {
       console.log(error);
@@ -109,7 +108,6 @@ const Allpdfs = () => {
     }
   };
 
-  console.log(filterdData);
   return (
     <>
       <Container sx={{ marginTop: "1.5rem" }}>
@@ -200,8 +198,7 @@ const Allpdfs = () => {
                         "linear-gradient(to right, #FF1105, #FCBB43)",
                       fontWeight: 700,
                     }}
-                    onClick={() => setModal({ open: true, update: false })}
-                  >
+                    onClick={() => setModal({ open: true, update: false })} >
                     معاينة
                   </Button>
                 </Stack>
